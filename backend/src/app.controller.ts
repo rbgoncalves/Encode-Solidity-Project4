@@ -18,7 +18,6 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { Express } from 'express';
-import { Blob } from 'buffer';
 import { AppService } from './app.service';
 import { FileDataDto } from './dtos/file-data.dto';
 import { SetMetadataDto } from './dtos/set-metadata.dto';

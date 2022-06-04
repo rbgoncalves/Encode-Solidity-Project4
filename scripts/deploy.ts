@@ -1,30 +1,49 @@
-// We require the Hardhat Runtime Environment explicitly here. This is optional
-// but useful for running the script in a standalone fashion through `node <script>`.
-//
-// When running the script with `npx hardhat run <script>` you'll find the Hardhat
-// Runtime Environment's members available in the global scope.
-import { ethers } from "hardhat";
+import { ethers } from "ethers";
+import "dotenv/config";
+import * as rmcJson from "../artifacts/contracts/RealMonkeyCollection.sol/RealMonkeyCollection.json";
 
 async function main() {
-  // Hardhat always runs the compile task when running scripts with its command
-  // line interface.
-  //
-  // If this script is run directly using `node` you may want to call compile
-  // manually to make sure everything is compiled
-  // await hre.run('compile');
+  const signer = await connectToBlockchain();
 
-  // We get the contract to deploy
-  const Greeter = await ethers.getContractFactory("Greeter");
-  const greeter = await Greeter.deploy("Hello, Hardhat!");
+  const rmcFactory = new ethers.ContractFactory(
+    rmcJson.abi,
+    rmcJson.bytecode,
+    signer
+  );
+  const contract = await rmcFactory.deploy();
 
-  await greeter.deployed();
+  await contract.deployed();
 
-  console.log("Greeter deployed to:", greeter.address);
+  console.log("RealMonkeyCollection ERC721 deployed to:", contract.address);
 }
 
-// We recommend this pattern to be able to use async/await everywhere
-// and properly handle errors.
 main().catch((error) => {
   console.error(error);
   process.exitCode = 1;
 });
+
+// ###############################
+
+async function connectToBlockchain() {
+  const wallet = new ethers.Wallet(
+    process.env.PRIVATE_KEY as ethers.utils.BytesLike
+  );
+
+  console.log(`Using address ${wallet.address}`);
+
+  const provider = ethers.providers.getDefaultProvider("ropsten", {
+    etherscan: process.env.ETHERSCAN_API_KEY,
+  });
+
+  const signer = await wallet.connect(provider);
+  const balanceBN = await signer.getBalance();
+  const balance = Number(ethers.utils.formatEther(balanceBN));
+
+  console.log(`Wallet balance: ${balance}`);
+
+  if (balance < 0.01) {
+    throw new Error("Not enough ether");
+  }
+
+  return signer;
+}
