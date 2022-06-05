@@ -7,7 +7,7 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 contract RealMonkeyCollection is ERC721URIStorage, Ownable {
     event NftMinted(address indexed to, uint256 tokenId, string tokenURI);
 
-    constructor() public ERC721("Real Monkey Collection", "RMC") {}
+    constructor() ERC721("Real Monkey Collection", "RMC") {}
 
     function mintNft(address to, uint256 tokenId, string memory tokenURI)
         public

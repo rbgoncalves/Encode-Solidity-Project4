@@ -19,6 +19,7 @@ import {
 } from '@nestjs/swagger';
 import { Express } from 'express';
 import { AppService } from './app.service';
+import { ContractService } from './contract/contract.service';
 import { FileDataDto } from './dtos/file-data.dto';
 import { SetMetadataDto } from './dtos/set-metadata.dto';
 import { UploadIpfsDto } from './dtos/upload-ipfs.dto';
@@ -26,7 +27,10 @@ import { UploadIpfsDto } from './dtos/upload-ipfs.dto';
 @ApiTags('file')
 @Controller()
 export class AppController {
-  constructor(private readonly appService: AppService) {}
+  constructor(
+    private readonly appService: AppService,
+    private readonly contractService: ContractService,
+  ) {}
 
   @Get('')
   @ApiOperation({
@@ -224,8 +228,10 @@ export class AppController {
   })
   saveIpfsAndMint(@Body() body: UploadIpfsDto) {
     // Save image in Ipfs
+    //this.appService.saveToIpfs(body.id);
     // Save Metadata w/ image url in Ipfs
     // Mint NFT with metadata uri
     // Return tx & ipfs links
+    this.contractService.mintNft();
   }
 }
