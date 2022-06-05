@@ -143,7 +143,7 @@ export class AppController {
       const fileStream = await this.appService.getFromIpfs(id);
       res.set({
         'Content-Type': fileData.mimetype,
-        'Content-Disposition': `attachment; filename="${fileData.fileName}"`,
+        'Content-Disposition': `inline; filename="${fileData.fileName}"`,
       });
       return fileStream;
     } catch (error) {
@@ -209,22 +209,23 @@ export class AppController {
     return updatedObj;
   }
 
-  @Post('ipfs-save')
+  @Post('mint')
   @ApiOperation({
-    summary: 'Register file metadata',
-    description: 'Registers a metadata for a file',
+    summary: 'Register in IPFS and Mint NFT',
   })
   @ApiResponse({
     status: 200,
-    description: 'Metadata registered',
+    description: 'NFT minted',
   })
   @ApiResponse({
     status: 503,
     description: 'Server Error',
     type: HttpException,
   })
-  sendFileIpfs(@Body() body: UploadIpfsDto) {
-    const updatedObj = this.appService.saveToIpfs(body.id);
-    return updatedObj;
+  saveIpfsAndMint(@Body() body: UploadIpfsDto) {
+    // Save image in Ipfs
+    // Save Metadata w/ image url in Ipfs
+    // Mint NFT with metadata uri
+    // Return tx & ipfs links
   }
 }
