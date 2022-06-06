@@ -1,6 +1,5 @@
 import { Injectable } from '@nestjs/common';
 import { ethers } from 'ethers';
-import { CID } from 'ipfs-http-client';
 import { WalletService } from 'src/wallet/wallet.service';
 import { RealMonkeyCollection } from '../../../typechain/RealMonkeyCollection';
 import * as RMCjson from '../../assets/RealMonkeyCollection.json';
