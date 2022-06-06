@@ -15,9 +15,9 @@ export class WalletService {
       process.env.PRIVATE_KEY as ethers.utils.BytesLike,
     );
 
-    this.provider = ethers.providers.getDefaultProvider('ropsten', {
-      etherscan: process.env.ETHERSCAN_API_KEY,
-    });
+    console.log('Using wallet: ', wallet.address);
+
+    this.provider = ethers.providers.getDefaultProvider('rinkeby');
 
     try {
       this.signer = await wallet.connect(this.provider);

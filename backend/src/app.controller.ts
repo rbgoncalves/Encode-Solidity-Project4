@@ -226,12 +226,16 @@ export class AppController {
     description: 'Server Error',
     type: HttpException,
   })
-  saveIpfsAndMint(@Body() body: UploadIpfsDto) {
+  async saveIpfsAndMint(@Body() body: UploadIpfsDto) {
+    const tokenId = body.id;
     // Save image in Ipfs
-    //this.appService.saveToIpfs(body.id);
-    // Save Metadata w/ image url in Ipfs
+    await this.appService.saveFileToIpfs(tokenId);
+    // Could have saved the Metadata w/ image url in Ipfs
+
     // Mint NFT with metadata uri
+    const result = await this.contractService.mintNft(tokenId);
+
     // Return tx & ipfs links
-    this.contractService.mintNft();
+    return result;
   }
 }

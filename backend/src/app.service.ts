@@ -5,7 +5,7 @@ import { Config } from 'node-json-db/dist/lib/JsonDBConfig';
 import { FileDataDto } from './dtos/file-data.dto';
 import { MetadataDto } from './dtos/metadata.dto';
 import { FileData } from './schemas/file-data.interface';
-import { create } from 'ipfs-http-client';
+import { CID, create } from 'ipfs-http-client';
 import { createReadStream } from 'fs';
 import { IPFSHTTPClient } from 'ipfs-http-client/types/src/types';
 import { concat as uint8ArrayConcat } from 'uint8arrays/concat';
@@ -47,7 +47,10 @@ export class AppService {
       return { error };
     }
     if (!file) return false;
-    this.db.push(`/${fileId}/metadata`, metadata);
+    this.db.push(`/${fileId}/metadata`, {
+      ...metadata,
+      tokenId: fileId,
+    });
     return this.get(fileId);
   }
 
@@ -73,13 +76,14 @@ export class AppService {
     }
   }
 
-  async saveToIpfs(fileId: number) {
+  async saveFileToIpfs(fileId: number) {
     const fileData: FileData = this.get(fileId);
     const fileLocation = `../upload/${fileData.file.storageName}`;
     const fileBytes = fs.readFileSync(fileLocation);
     const ipfsData = await this.ipfsClient.add(fileBytes);
     this.db.push(`/${fileId}/ipfs`, ipfsData);
-    return this.get(fileId);
+
+    return ipfsData.cid;
   }
 
   async getFromIpfs(fileId: number) {

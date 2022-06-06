@@ -10,7 +10,11 @@ async function main() {
     rmcJson.bytecode,
     signer
   );
+  console.log("Deploying contract...");
+
   const contract = await rmcFactory.deploy();
+
+  console.log("waiting...");
 
   await contract.deployed();
 
@@ -31,7 +35,7 @@ async function connectToBlockchain() {
 
   console.log(`Using address ${wallet.address}`);
 
-  const provider = ethers.providers.getDefaultProvider("ropsten", {
+  const provider = ethers.providers.getDefaultProvider("rinkeby", {
     etherscan: process.env.ETHERSCAN_API_KEY,
   });
 

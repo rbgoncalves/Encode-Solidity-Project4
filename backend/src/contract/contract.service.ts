@@ -1,12 +1,13 @@
 import { Injectable } from '@nestjs/common';
 import { ethers } from 'ethers';
+import { CID } from 'ipfs-http-client';
 import { WalletService } from 'src/wallet/wallet.service';
 import { RealMonkeyCollection } from '../../../typechain/RealMonkeyCollection';
 import * as RMCjson from '../../assets/RealMonkeyCollection.json';
 
 @Injectable()
 export class ContractService {
-  contractSignedInstance: RealMonkeyCollection;
+  contract: RealMonkeyCollection;
 
   constructor(private walletService: WalletService) {
     this.setupContractInstance();
@@ -18,16 +19,25 @@ export class ContractService {
       throw new Error('TOKEN_CONTRACT_ADDRESS not found');
     }
 
-    this.contractSignedInstance = new ethers.Contract(
+    this.contract = new ethers.Contract(
       contractAddress,
       RMCjson.abi,
       this.walletService.signer,
     ) as RealMonkeyCollection;
   }
 
-  async mintNft() {
-    console.log('MINT NFT', this.contractSignedInstance.address);
+  async mintNft(tokenId: number) {
+    console.log('Minting new NFT');
 
-    return await 1;
+    const tx = await this.contract.mintNft(this.contract.address, tokenId);
+
+    console.log('waiting...');
+    await tx.wait();
+    console.log('Tx: ', tx.hash);
+
+    return {
+      //txHash: tx.hash,
+      tokenId,
+    };
   }
 }
