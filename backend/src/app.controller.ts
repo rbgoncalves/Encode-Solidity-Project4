@@ -73,7 +73,7 @@ export class AppController {
     }
   }
 
-  @Get(':id')
+  @Get('metadata/:id')
   @ApiOperation({
     summary: 'Get element by id',
     description: 'Gets the element at the requested index',
@@ -87,10 +87,16 @@ export class AppController {
     description: 'The server is not configured correctly',
     type: HttpException,
   })
-  async getData(@Param('id') id: number) {
+  async getMetadata(@Param('id') id: number) {
     try {
       const result = this.appService.get(id);
-      return result;
+
+      const response = {
+        tokenId: id,
+        ...result.metadata,
+        uri: `ipfs://${result.ipfs.path}`,
+      };
+      return response;
     } catch (error) {
       throw new HttpException(error.message, 503);
     }
