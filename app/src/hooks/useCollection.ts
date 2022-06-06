@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from "react";
 import apiClient from "../services/apiClient";
 import useContract from "./useContract";
 
-type NftMetadata = {
+export type NftMetadata = {
   author: string;
   name: string;
   tokenId: string;
