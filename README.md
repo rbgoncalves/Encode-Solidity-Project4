@@ -1,6 +1,7 @@
 # Encode-Solidity-Project4/
 
-This project is composeded by a hardhat project, a nestjs project and a react project.
+This project is composed by a hardhat project, a nestjs project and a react project.
+This contract was deployed in the rinkeby testnet.
 
 ## Pre-requirements
 - Run your own IPFS node at localhost port 5001
